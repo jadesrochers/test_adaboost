@@ -2,6 +2,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_score, recall_score, roc_auc_score, roc_curve, confusion_matrix
+from sklearn.calibration import CalibratedClassifierCV
 import matplotlib.pyplot as plt
 from bokeh.plotting import figure, output_file, show
 from bokeh.models import Label, LabelSet
@@ -113,9 +114,13 @@ classifier = AdaBoostClassifier(
     n_estimators=80
 )
 classifier.fit(train_df, train_labels)
+calibrated_classify = CalibratedClassifierCV(base_estimator=classifier, method='isotonic', cv='prefit')
+calibrated_classify.fit(train_df, train_labels)
 
 import pdb; pdb.set_trace()
 # Get categorical predictions on test/valid data, as well as probabalistic
+test_predicts = calibrated_classify.predict(test_df)
+test_outputs = calibrated_classify.predict_proba(test_df)
 test_predicts = classifier.predict(test_df)
 test_outputs = classifier.predict_proba(test_df)
 test_probs = test_outputs[:,1]
