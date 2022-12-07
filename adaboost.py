@@ -117,12 +117,11 @@ classifier.fit(train_df, train_labels)
 calibrated_classify = CalibratedClassifierCV(base_estimator=classifier, method='isotonic', cv='prefit')
 calibrated_classify.fit(train_df, train_labels)
 
-import pdb; pdb.set_trace()
 # Get categorical predictions on test/valid data, as well as probabalistic
 test_predicts = calibrated_classify.predict(test_df)
 test_outputs = calibrated_classify.predict_proba(test_df)
-test_predicts = classifier.predict(test_df)
-test_outputs = classifier.predict_proba(test_df)
+# test_predicts = classifier.predict(test_df)
+# test_outputs = classifier.predict_proba(test_df)
 test_probs = test_outputs[:,1]
 rslts = confusion_matrix(test_labels, test_predicts)
 
